@@ -2,7 +2,10 @@
     <string name="app_name">My Application</string>
     <string name="title_image">Image</string>
     <string name="title_file">File</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_audio">Audio</string>
     <string name="save">Save</string>
     <string name="read">Read</string>
+    <string name="get_audio">Get Audio</string>
+    <string name="content_file">Content File</string>
+    <string name="file_name">File name</string>
 </resources>

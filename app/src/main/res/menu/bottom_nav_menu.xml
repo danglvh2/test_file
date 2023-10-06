@@ -7,9 +7,9 @@
         android:title="@string/title_image" />
 
     <item
-        android:id="@+id/navigation_dashboard"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_dashboard" />
+        android:id="@+id/navigation_audio"
+        android:icon="@drawable/ic_audio"
+        android:title="@string/title_audio" />
 
     <item
         android:id="@+id/navigation_file"

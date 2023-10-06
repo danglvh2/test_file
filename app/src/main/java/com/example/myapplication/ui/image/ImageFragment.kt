@@ -50,9 +50,7 @@ class ImageFragment : Fragment() {
     private fun onCaptureImageResult(state: PermissionUtils.PermissionState) {
         when (state) {
             PermissionUtils.PermissionState.Denied, PermissionUtils.PermissionState.PermanentlyDenied -> {}
-            PermissionUtils.PermissionState.Granted -> {
-                startCamera()
-            }
+            PermissionUtils.PermissionState.Granted -> startCamera()
         }
     }
 

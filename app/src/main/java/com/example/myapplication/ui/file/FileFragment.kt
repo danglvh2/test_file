@@ -1,9 +1,11 @@
 package com.example.myapplication.ui.file
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +14,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.myapplication.databinding.FragmentFileBinding
+import com.example.myapplication.utils.PermissionUtils
+import com.example.myapplication.utils.PermissionUtils.launchMultiplePermission
+import com.example.myapplication.utils.PermissionUtils.registerPermission
 
 
 class FileFragment : Fragment() {
@@ -21,15 +26,29 @@ class FileFragment : Fragment() {
 
     private val mViewModel: FileViewModel by viewModels()
 
-    private val chooseFileRequest = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+    private var uri: Uri? = null
+
+    private val chooseFileRequest =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val uri = result.data?.data
+                uri = result.data?.data
                 uri?.let {
-                    val src = it.path
-                    binding.edtContent.setText(src)
+                    val inputStream = requireContext().contentResolver.openInputStream(it)
+                    inputStream?.let {
+                        val string = inputStream.bufferedReader().use { it.readText() }
+                        binding.tvContent.text = string
+                    }
                 }
             }
         }
+
+    private val createFilePermissionLauncher = registerPermission { onCreateFileResult(it) }
+    private fun onCreateFileResult(state: PermissionUtils.PermissionState) {
+        when (state) {
+            PermissionUtils.PermissionState.Denied, PermissionUtils.PermissionState.PermanentlyDenied -> {}
+            PermissionUtils.PermissionState.Granted -> editFile()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,6 +62,10 @@ class FileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setOnClick()
+    }
+
+    private fun setOnClick() {
         binding.btnRead.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
                 type = "text/plain"
@@ -51,6 +74,19 @@ class FileFragment : Fragment() {
             }
             chooseFileRequest.launch(intent)
         }
+
+        binding.btnSave.setOnClickListener {
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+                createFilePermissionLauncher.launchMultiplePermission(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE))
+            } else {
+                editFile()
+            }
+
+        }
+    }
+
+    private fun editFile() {
+        val data = binding.edtContent.text.toString()
     }
 
     override fun onDestroyView() {
