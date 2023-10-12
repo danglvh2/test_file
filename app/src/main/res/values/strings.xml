@@ -8,4 +8,8 @@
     <string name="get_audio">Get Audio</string>
     <string name="content_file">Content File</string>
     <string name="file_name">File name</string>
+    <string name="capture_image_internal_storage">Capture Image Internal Storage</string>
+    <string name="capture_image_external_storage">Capture Image External Storage</string>
+    <string name="show_image_internal_storage">Show Image Internal Storage</string>
+    <string name="show_image_external_storage">Show Image External Storage</string>
 </resources>
